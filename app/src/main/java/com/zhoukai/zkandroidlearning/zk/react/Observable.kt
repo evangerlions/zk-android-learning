@@ -19,5 +19,9 @@ abstract class Observable<T> : ObservableSource<T> {
         fun <T> create(observableOnSubscribe: ObservableOnSubscribe<T>): Observable<T> {
             return ObservableCreate(observableOnSubscribe)
         }
+
+        fun <T, R> Observable<T>.map(mapper: (T) -> R): Observable<R> {
+            return ObservableMap(mapper, this)
+        }
     }
 }

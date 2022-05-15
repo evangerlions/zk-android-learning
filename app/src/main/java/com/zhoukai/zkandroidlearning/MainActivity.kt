@@ -13,6 +13,7 @@ import com.google.android.material.snackbar.Snackbar
 import com.zhoukai.zkandroidlearning.databinding.ActivityMainBinding
 import com.zhoukai.zkandroidlearning.zk.react.Emitter
 import com.zhoukai.zkandroidlearning.zk.react.Observable
+import com.zhoukai.zkandroidlearning.zk.react.Observable.Companion.map
 import com.zhoukai.zkandroidlearning.zk.react.ObservableOnSubscribe
 import com.zhoukai.zkandroidlearning.zk.react.Observer
 
@@ -47,20 +48,21 @@ class MainActivity : AppCompatActivity() {
                     emitter.onNext("hhh")
                 }
 
-            }
-        ).observe(object : Observer<String> {
-            override fun onNext(t: String) {
-                log("receive: $t")
-            }
+            })
+            .map { it + "WithMap" }
+            .observe(object : Observer<String> {
+                override fun onNext(t: String) {
+                    log("receive: $t")
+                }
 
-            override fun onError(e: Throwable) {
+                override fun onError(e: Throwable) {
 
-            }
+                }
 
-            override fun onSubscribe() {
-                log("onSubscribe")
-            }
-        })
+                override fun onSubscribe() {
+                    log("onSubscribe")
+                }
+            })
     }
 
     private fun log(str: String) {
