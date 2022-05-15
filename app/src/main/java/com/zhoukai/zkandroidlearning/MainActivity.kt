@@ -1,15 +1,20 @@
 package com.zhoukai.zkandroidlearning
 
 import android.os.Bundle
-import com.google.android.material.snackbar.Snackbar
+import android.util.Log
+import android.view.Menu
+import android.view.MenuItem
 import androidx.appcompat.app.AppCompatActivity
 import androidx.navigation.findNavController
 import androidx.navigation.ui.AppBarConfiguration
 import androidx.navigation.ui.navigateUp
 import androidx.navigation.ui.setupActionBarWithNavController
-import android.view.Menu
-import android.view.MenuItem
+import com.google.android.material.snackbar.Snackbar
 import com.zhoukai.zkandroidlearning.databinding.ActivityMainBinding
+import com.zhoukai.zkandroidlearning.zk.react.Emitter
+import com.zhoukai.zkandroidlearning.zk.react.Observable
+import com.zhoukai.zkandroidlearning.zk.react.ObservableOnSubscribe
+import com.zhoukai.zkandroidlearning.zk.react.Observer
 
 class MainActivity : AppCompatActivity() {
 
@@ -32,6 +37,34 @@ class MainActivity : AppCompatActivity() {
             Snackbar.make(view, "Replace with your own action", Snackbar.LENGTH_LONG)
                 .setAction("Action", null).show()
         }
+        testMyLogic()
+    }
+
+    private fun testMyLogic() {
+        Observable.create(
+            object : ObservableOnSubscribe<String> {
+                override fun subscribe(emitter: Emitter<String>) {
+                    emitter.onNext("hhh")
+                }
+
+            }
+        ).observe(object : Observer<String> {
+            override fun onNext(t: String) {
+                log("receive: $t")
+            }
+
+            override fun onError(e: Throwable) {
+
+            }
+
+            override fun onSubscribe() {
+                log("onSubscribe")
+            }
+        })
+    }
+
+    private fun log(str: String) {
+        Log.d("zktag", str)
     }
 
     override fun onCreateOptionsMenu(menu: Menu): Boolean {
