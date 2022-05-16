@@ -26,7 +26,7 @@ abstract class Observable<T> : ObservableSource<T> {
         }
 
         fun <T> Observable<T>.observerOn(scheduler: Scheduler): Observable<T> {
-            return ObservableObservableOn(scheduler, this)
+            return ObservableObserveOn(scheduler, this)
         }
 
         fun <T> Observable<T>.subscribeOn(scheduler: Scheduler): Observable<T> {
