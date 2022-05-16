@@ -11,11 +11,12 @@ import androidx.navigation.ui.navigateUp
 import androidx.navigation.ui.setupActionBarWithNavController
 import com.google.android.material.snackbar.Snackbar
 import com.zhoukai.zkandroidlearning.databinding.ActivityMainBinding
-import com.zhoukai.zkandroidlearning.zk.react.Emitter
-import com.zhoukai.zkandroidlearning.zk.react.Observable
+import com.zhoukai.zkandroidlearning.zk.react.*
 import com.zhoukai.zkandroidlearning.zk.react.Observable.Companion.map
-import com.zhoukai.zkandroidlearning.zk.react.ObservableOnSubscribe
-import com.zhoukai.zkandroidlearning.zk.react.Observer
+import com.zhoukai.zkandroidlearning.zk.react.Observable.Companion.observerOn
+import com.zhoukai.zkandroidlearning.zk.react.Observable.Companion.subscribeOn
+import com.zhoukai.zkandroidlearning.zk.react.scheduler.AndroidMainScheduler
+import com.zhoukai.zkandroidlearning.zk.react.scheduler.IOScheduler
 
 class MainActivity : AppCompatActivity() {
 
@@ -47,12 +48,25 @@ class MainActivity : AppCompatActivity() {
                 override fun subscribe(emitter: Emitter<String>) {
                     emitter.onNext("hhh")
                 }
-
             })
-            .map { it + "WithMap" }
+            .map {
+                log("WithThread2 ${Thread.currentThread().name}")
+                "$it With1 "
+            }
+            .subscribeOn(IOScheduler)
+            .map {
+                log("WithThread2 ${Thread.currentThread().name}")
+                "$it With2 "
+            }
+            .observerOn(AndroidMainScheduler)
+            .subscribeOn(AndroidMainScheduler)
+            .map {
+                log("WithThread3 ${Thread.currentThread().name}")
+                "$it With3 "
+            }
             .observe(object : Observer<String> {
                 override fun onNext(t: String) {
-                    log("receive: $t")
+                    log("receive: $t ${Thread.currentThread().name}")
                 }
 
                 override fun onError(e: Throwable) {
@@ -60,7 +74,7 @@ class MainActivity : AppCompatActivity() {
                 }
 
                 override fun onSubscribe() {
-                    log("onSubscribe")
+                    log("onSubscribe  ${Thread.currentThread().name}")
                 }
             })
     }

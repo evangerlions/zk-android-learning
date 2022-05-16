@@ -3,6 +3,7 @@ package com.zhoukai.zkandroidlearning.zk.react
 class ObservableCreate<T>(private val source : ObservableOnSubscribe<T>): Observable<T>() {
 
     override fun doOnActualSubscribe(observer: Observer<T>) {
+        observer.onSubscribe()
         source.subscribe(EmitterCreate(observer))
     }
 

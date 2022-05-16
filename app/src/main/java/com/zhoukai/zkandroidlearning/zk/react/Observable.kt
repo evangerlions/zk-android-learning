@@ -1,5 +1,7 @@
 package com.zhoukai.zkandroidlearning.zk.react
 
+import com.zhoukai.zkandroidlearning.zk.react.scheduler.Scheduler
+
 interface ObservableSource<T> {
 
     fun observe(observer: Observer<T>)
@@ -8,7 +10,6 @@ interface ObservableSource<T> {
 abstract class Observable<T> : ObservableSource<T> {
 
     override fun observe(observer: Observer<T>) {
-        observer.onSubscribe()
         doOnActualSubscribe(observer)
     }
 
@@ -22,6 +23,14 @@ abstract class Observable<T> : ObservableSource<T> {
 
         fun <T, R> Observable<T>.map(mapper: (T) -> R): Observable<R> {
             return ObservableMap(mapper, this)
+        }
+
+        fun <T> Observable<T>.observerOn(scheduler: Scheduler): Observable<T> {
+            return ObservableObservableOn(scheduler, this)
+        }
+
+        fun <T> Observable<T>.subscribeOn(scheduler: Scheduler): Observable<T> {
+            return ObservableSubscribeOn(scheduler, this)
         }
     }
 }
